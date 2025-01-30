@@ -1,4 +1,5 @@
-import { Component} from "react";
+import React, { Component } from "react";
+import axios from "axios";
 import './index.css';
 
 class SignupForm extends Component {
@@ -11,113 +12,86 @@ class SignupForm extends Component {
         emailError: '',
         passwordError: '',
         confirmPasswordError: ''
-    }
+    };
 
-    onChangeUsername = (event) => {
-        this.setState({ username: event.target.value });
-    }
-
-    onChangeEmail = (event) => {
-        this.setState({ email: event.target.value });
-    }
-
-    onChangePassword = (event) => {
-        this.setState({ password: event.target.value });
-    }
-
-    onChangeConfirmPassword = (event) => {
-        this.setState({ confirmPassword: event.target.value });
-    }
-
-    validateUsername = () => {
-        const { username } = this.state;
-
-        if (username === '') {
+    validateForm = () => {
+        let isValid = true;
+        
+        // Username validation
+        if (!this.state.username.trim()) {
             this.setState({ usernameError: 'Username cannot be empty' });
-            return false;
+            isValid = false;
+        } else {
+            this.setState({ usernameError: '' });
         }
 
-        this.setState({ usernameError: '' });
-        return true;
-    }
-
-    validateEmail = () => {
-        const { email } = this.state;
-
-        if (email === '') {
+        // Email validation
+        if (!this.state.email.trim()) {
             this.setState({ emailError: 'Email cannot be empty' });
-            return false;
+            isValid = false;
+        } else if (!/\S+@\S+\.\S+/.test(this.state.email)) {
+            this.setState({ emailError: 'Please enter a valid email' });
+            isValid = false;
+        } else {
+            this.setState({ emailError: '' });
         }
 
-        this.setState({ emailError: '' });
-        return true;
-    }
-
-    validatePassword = () => {
-        const { password } = this.state;
-
-        if (password === '') {
+        // Password validation
+        if (!this.state.password) {
             this.setState({ passwordError: 'Password cannot be empty' });
-            return false;
+            isValid = false;
+        } else if (this.state.password.length < 6) {
+            this.setState({ passwordError: 'Password must be at least 6 characters' });
+            isValid = false;
+        } else {
+            this.setState({ passwordError: '' });
         }
 
-        this.setState({ passwordError: '' });
-        return true;
-    }
-
-    validateConfirmPassword = () => {
-        const { confirmPassword, password } = this.state;
-
-        if (confirmPassword === '') {
+        // Confirm password validation
+        if (!this.state.confirmPassword) {
             this.setState({ confirmPasswordError: 'Confirm password cannot be empty' });
-            return false;
+            isValid = false;
+        } else if (this.state.confirmPassword !== this.state.password) {
+            this.setState({ confirmPasswordError: 'Passwords do not match' });
+            isValid = false;
+        } else {
+            this.setState({ confirmPasswordError: '' });
         }
 
-        if (confirmPassword !== password) {
-            this.setState({ confirmPasswordError: 'Password and confirm password should match' });
-            return false;
-        }
+        return isValid;
+    };
 
-        this.setState({ confirmPasswordError: '' });
-        return true;
-    }
+    handleInputChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({ [name]: value });
+    };
 
-    onSubmit = async (event) => {
+    handleSubmit = async (event) => {
         event.preventDefault();
-    
-        const isUsernameValid = this.validateUsername();
-        const isEmailValid = this.validateEmail();
-        const isPasswordValid = this.validatePassword();
-        const isConfirmPasswordValid = this.validateConfirmPassword();
-    
-        if (isUsernameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid) {
+
+        if (this.validateForm()) {
             try {
-                const response = await fetch('http://localhost:5000/api/signup', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        username: this.state.username,
-                        email: this.state.email,
-                        password: this.state.password
-                    })
+                console.log('Attempting to send data to:', 'http://localhost:5000/api/signup');
+                console.log('Sending data:', {
+                    username: this.state.username,
+                    email: this.state.email,
+                    password: this.state.password
                 });
-    
-                const data = await response.json();
-    
-                if (!response.ok) {
-                    // Handle validation errors from server
-                    const errors = data.errors || {};
-                    this.setState({
-                        usernameError: errors.username || '',
-                        emailError: errors.email || '',
-                        passwordError: errors.password || ''
-                    });
-                    return;
-                }
-    
-                // Clear form on success
+
+                const response = await axios.post('http://localhost:5000/api/signup', {
+                    username: this.state.username,
+                    email: this.state.email,
+                    password: this.state.password
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Server response:', response);
+                alert('Registration successful!');
+
+                // Reset form
                 this.setState({
                     username: '',
                     email: '',
@@ -128,79 +102,89 @@ class SignupForm extends Component {
                     passwordError: '',
                     confirmPasswordError: ''
                 });
-    
-                // Add success message or redirect user
-                alert('Signup successful!');
-                
             } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred during signup');
+                console.error('Full error object:', error);
+                console.error('Error response data:', error.response?.data);
+                console.error('Error status:', error.response?.status);
+                console.error('Error headers:', error.response?.headers);
+                
+                const errorMessage = error.response?.data?.error || 
+                                   error.message || 
+                                   'Registration failed - Please check if the server is running';
+                alert(errorMessage);
             }
         }
-    }
+    };
 
     render() {
-        const { username, email, password, confirmPassword, usernameError, emailError, passwordError, confirmPasswordError } = this.state;
-
         return (
-                <form className="signup-form-container" onSubmit={this.onSubmit}>
+            <form className="signup-form-container" onSubmit={this.handleSubmit}>
                 <h1 className="signup-heading">Signup</h1>
-                <div className="input-container">
-                <label className="input-label" htmlFor="username">Username</label>
-                <input
-                    id="username"
-                    className="input-field"
-                    type="text"
-                    value={username}
-                    onChange={this.onChangeUsername}
-                    placeholder="Enter your username"
-                />
-                <p className="error-message">{usernameError}</p>
-                </div>
                 
-                <div className="input-container">
-                <label className="input-label" htmlFor="email">Email</label>
-                <input
-                    id="email"
-                    className="input-field"
-                    type="email"
-                    value={email}
-                    onChange={this.onChangeEmail}
-                    placeholder="Enter your email"
-                />
-                <p className="error-message">{emailError}</p>
+                <div className="form-group">
+                    <label className="input-label" htmlFor="username">Username</label>
+                    <input
+                        id="username"
+                        name="username"
+                        className="input-field"
+                        type="text"
+                        value={this.state.username}
+                        onChange={this.handleInputChange}
+                    />
+                    {this.state.usernameError && 
+                        <p className="error-message">{this.state.usernameError}</p>
+                    }
                 </div>
-                <div className="input-container"> 
-                <label className="input-label" htmlFor="password">Password</label>
-                <input
-                    id="password"
-                    className="input-field"
-                    type="password"
-                    value={password}
-                    onChange={this.onChangePassword}
-                    placeholder="Enter your password"
-                />
-                <p className="error-message">{passwordError}</p>
+
+                <div className="form-group">
+                    <label className="input-label" htmlFor="email">Email</label>
+                    <input
+                        id="email"
+                        name="email"
+                        className="input-field"
+                        type="email"
+                        value={this.state.email}
+                        onChange={this.handleInputChange}
+                    />
+                    {this.state.emailError && 
+                        <p className="error-message">{this.state.emailError}</p>
+                    }
                 </div>
-                <div className="input-container">
-                <label className="input-label" htmlFor="confirmPassword">Confirm Password</label>
-                <input
-                    id="confirmPassword"
-                    className="input-field"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={this.onChangeConfirmPassword}
-                    placeholder="Enter your confirm password"
-                />
-                <p className="error-message">{confirmPasswordError}</p>
+
+                <div className="form-group">
+                    <label className="input-label" htmlFor="password">Password</label>
+                    <input
+                        id="password"
+                        name="password"
+                        className="input-field"
+                        type="password"
+                        value={this.state.password}
+                        onChange={this.handleInputChange}
+                    />
+                    {this.state.passwordError && 
+                        <p className="error-message">{this.state.passwordError}</p>
+                    }
                 </div>
-                <button type="submit" className="signup-button">Signup</button>
+
+                <div className="form-group">
+                    <label className="input-label" htmlFor="confirmPassword">Confirm Password</label>
+                    <input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        className="input-field"
+                        type="password"
+                        value={this.state.confirmPassword}
+                        onChange={this.handleInputChange}
+                    />
+                    {this.state.confirmPasswordError && 
+                        <p className="error-message">{this.state.confirmPasswordError}</p>
+                    }
+                </div>
+
+                <button type="submit" className="signup-button">Sign Up</button>
             </form>
-            
         );
     }
-
-    
-
 }
+
 export default SignupForm;
