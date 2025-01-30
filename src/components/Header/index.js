@@ -26,13 +26,13 @@ const Header = () => {
             <nav className="menu" aria-label="Main navigation">
               <ul className="menu-list">
                 <li className="menu-item">
-                  <Link to="/" className="menu-link">Signup</Link>
+                  <Link to="/signup" className="menu-link">Signup</Link>
                 </li>
                 <li className="menu-item">
                   <Link to="/loginform" className="menu-link">Login</Link>
                 </li>
                 <li className="menu-item">
-                  <Link to="/home" className="menu-link">Home</Link>
+                  <Link to="/" className="menu-link">Home</Link>
                 </li>
                 <li className="menu-item">
                   <Link to="/products" className="menu-link">Products</Link>
