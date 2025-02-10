@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import './index.css';
 
@@ -182,6 +183,7 @@ class SignupForm extends Component {
                 </div>
 
                 <button type="submit" className="signup-button">Sign Up</button>
+                <Link to="/loginform" className="link">Already have an account? Login</Link>
             </form>
         );
     }

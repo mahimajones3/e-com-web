@@ -46,3 +46,10 @@
     color: red;
     font-size: 12px;
 }
+
+.link{  
+    margin-top: 20px;
+    color: #007bff;
+    text-decoration: none;
+    margin-left: 15px;
+}
