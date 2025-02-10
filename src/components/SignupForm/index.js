@@ -17,7 +17,7 @@ class SignupForm extends Component {
 
     validateForm = () => {
         let isValid = true;
-        
+    
         // Username validation
         if (!this.state.username.trim()) {
             this.setState({ usernameError: 'Username cannot be empty' });
