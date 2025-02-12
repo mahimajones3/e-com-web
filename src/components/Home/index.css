@@ -1,40 +1,184 @@
-.home-container{
+/* Home.css */
+
+/* Layout Containers */
+.home-page {
+    min-height: 100vh;
+    background-color: #f9fafb;
+  }
+  
+  .header-bar {
+    background-color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+  }
+  
+  .header-content {
+    max-width: 80rem;
+    margin: 0 auto;
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
-    margin: 20px 0;
-    padding: 50px;
-}
-.hero-section{
-    flex: 1;
-    margin-right: 20px;
-}
-.img-container{
-    flex: 1;
-    display: flex;
-    justify-content: center;
     align-items: center;
-}
-.home-img{
-    width: 500px;
-    height: 300px;
-}
-h1{
+  }
+  
+  .main-container {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  /* Hero Section */
+  .hero-container {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+  
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2rem;
+  }
+  
+  @media (min-width: 768px) {
+    .hero-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .hero-title {
     font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #333;
-}
-p{
-    font-size: 20px;
-    color: #333;
-}
-.btn{
-    padding: 10px 20px;
-    margin-top: 20px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    margin-left: 60px;
-    text-decoration: none;
-}
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1.2;
+  }
+  
+  .hero-description {
+    font-size: 1.125rem;
+    color: #4b5563;
+    line-height: 1.6;
+  }
+  
+  .hero-image {
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Feature Cards */
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  
+  @media (min-width: 768px) {
+    .features-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .features-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  .feature-card {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .feature-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .feature-icon {
+    margin-bottom: 1rem;
+  }
+  
+  .feature-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+  
+  .feature-description {
+    color: #6b7280;
+  }
+  
+  /* Call to Action */
+  .cta-container {
+    background: linear-gradient(to right, #2563eb, #7c3aed);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .cta-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+  
+  .cta-description {
+    color: #ffffff;
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Buttons */
+  .primary-button {
+    background-color: #2563eb;
+    color: #ffffff;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 1.125rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+  }
+  
+  .primary-button:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .secondary-button {
+    background-color: #ffffff;
+    color: #2563eb;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 1.125rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+  }
+  
+  .secondary-button:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .logout-button {
+    color: #dc2626;
+    transition: color 0.3s ease;
+  }
+  
+  .logout-button:hover {
+    color: #b91c1c;
+  }

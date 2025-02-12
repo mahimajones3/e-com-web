@@ -183,7 +183,7 @@ class SignupForm extends Component {
                 </div>
 
                 <button type="submit" className="signup-button">Sign Up</button>
-                <Link to="/loginform" className="link">Already have an account? Login</Link>
+                <Link to="/" className="link">Already have an account? Login</Link>
             </form>
         );
     }
