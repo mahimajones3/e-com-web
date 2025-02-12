@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React from 'react';
 import LoginForm from "./components/LoginForm";
 import SignupForm from "./components/SignupForm";
 import Home from "./components/Home";
@@ -12,8 +13,8 @@ function App() {
       <div className="App">
         <main className="main-content">
           <Routes>
-            <Route path="/loginform" element={<LoginForm />} />
-            <Route path="/" element={<SignupForm />} />
+            <Route path="/" element={<LoginForm />} />
+            <Route path="/signup" element={<SignupForm />} />
             <Route path="/products" element={<Products />} />
             <Route path="/home" element={<Home />} />
             <Route path="/header" element={<Header />} />

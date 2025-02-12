@@ -1,3 +1,4 @@
+import React from 'react';
 import './index.css';
 import { Link } from 'react-router-dom';
 import Header from '../Header';
@@ -19,9 +20,12 @@ const Home = () => {
 
     </div>
     <Link to="/products" className="btn">Shop Now</Link>
-
+    <Link to="/logout" className="link">Logout</Link>
    </div>
     
   );
 };     
 export default Home;
+
+
+

@@ -1,113 +1,116 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios';
+import React, { Component } from "react";
+import { Link, withRouter } from "react-router-dom"; // Import withRouter
+import axios from "axios";
 import './index.css';
 
-const LoginForm = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [usernameError, setUsernameError] = useState('');
-    const [passwordError, setPasswordError] = useState('');
-    const navigate = useNavigate();
-
-    const onChangeUsername = (event) => {
-        setUsername(event.target.value);
-        setUsernameError('');
+class LoginForm extends Component {
+    state = {
+        username: '',
+        password: '',
+        usernameError: '',
+        passwordError: ''
     };
 
-    const onChangePassword = (event) => {
-        setPassword(event.target.value);
-        setPasswordError('');
-    };
+    validateForm = () => {
+        let isValid = true;
 
-    const validateUsername = () => {
-        if (username.trim() === '') {
-            setUsernameError('Username cannot be empty');
-            return false;
+        // Username validation
+        if (!this.state.username.trim()) {
+            this.setState({ usernameError: 'Username cannot be empty' });
+            isValid = false;
+        } else {
+            this.setState({ usernameError: '' });
         }
-        return true;
-    };
 
-    const validatePassword = () => {
-        if (password.trim() === '') {
-            setPasswordError('Password cannot be empty');
-            return false;
+        // Password validation
+        if (!this.state.password) {
+            this.setState({ passwordError: 'Password cannot be empty' });
+            isValid = false;
+        } else {
+            this.setState({ passwordError: '' });
         }
-        return true;
+
+        return isValid;
     };
 
-    const onSubmit = async (event) => {
+    handleInputChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({ [name]: value });
+    };
+
+    handleSubmit = async (event) => {
         event.preventDefault();
-        setUsernameError('');
-        setPasswordError('');
 
-        if (validateUsername() && validatePassword()) {
+        if (this.validateForm()) {
             try {
                 const response = await axios.post('http://localhost:5000/api/login', {
-                    username,
-                    password
+                    username: this.state.username,
+                    password: this.state.password
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 });
 
-                if (response.data.success) {
-                    // Store token
-                    localStorage.setItem('token', response.data.token);
-                    console.log('Login successful', response.data);
-                    
-                    // Optionally navigate to dashboard or home
-                    // navigate('/dashboard');
-                }
+                console.log('Server response:', response);
+                alert('Login successful!');
+
+                // Navigate to the Home Page after successful login
+                this.props.history.push('/home'); // Use this.props.history.push to navigate
             } catch (error) {
-                console.error('Login error:', error.response ? error.response.data : error.message);
-                
-                if (error.response) {
-                    // Server responded with an error
-                    const errorMessage = error.response.data.error;
-                    if (errorMessage.includes('User not found')) {
-                        setUsernameError(errorMessage);
-                    } else if (errorMessage.includes('Invalid password')) {
-                        setPasswordError(errorMessage);
-                    } else {
-                        setUsernameError(errorMessage || 'Login failed');
-                    }
-                } else {
-                    // Network error or other issues
-                    setUsernameError('Unable to connect to the server. Please try again.');
-                }
+                console.error('Full error object:', error);
+                console.error('Error response data:', error.response?.data);
+                console.error('Error status:', error.response?.status);
+                console.error('Error headers:', error.response?.headers);
+
+                const errorMessage = error.response?.data?.error || 
+                                   error.message || 
+                                   'Login failed - Please check your credentials and try again';
+                alert(errorMessage);
             }
         }
     };
 
-    return (
-        <form className="login-form" onSubmit={onSubmit}>
-            <h1>Login</h1>
-            <div>
-                <label className="label" htmlFor="username">Username</label>
-                <input 
-                    className="input" 
-                    placeholder="Enter your username" 
-                    id="username" 
-                    type="text" 
-                    value={username} 
-                    onChange={onChangeUsername} 
-                />
-                {usernameError && <p className="error">{usernameError}</p>}
-            </div>
-            <div>
-                <label className="label" htmlFor="password">Password</label>
-                <input 
-                    className="input" 
-                    placeholder="Enter your password" 
-                    id="password" 
-                    type="password" 
-                    value={password} 
-                    onChange={onChangePassword} 
-                />
-                {passwordError && <p className="error">{passwordError}</p>}
-            </div>
-            <button type="submit" className="login-button">Login</button>
-            <Link to="/" className="link">Don't have an account? Sign up</Link>
-        </form>
-    );
-};
+    render() {
+        return (
+            <form className="login-form-container" onSubmit={this.handleSubmit}>
+                <h1 className="login-heading">Login</h1>
 
-export default LoginForm;
+                <div className="form-group">
+                    <label className="input-label" htmlFor="username">Username</label>
+                    <input
+                        id="username"
+                        name="username"
+                        className="input-field"
+                        type="text"
+                        value={this.state.username}
+                        onChange={this.handleInputChange}
+                    />
+                    {this.state.usernameError && 
+                        <p className="error-message">{this.state.usernameError}</p>
+                    }
+                </div>
+
+                <div className="form-group">
+                    <label className="input-label" htmlFor="password">Password</label>
+                    <input
+                        id="password"
+                        name="password"
+                        className="input-field"
+                        type="password"
+                        value={this.state.password}
+                        onChange={this.handleInputChange}
+                    />
+                    {this.state.passwordError && 
+                        <p className="error-message">{this.state.passwordError}</p>
+                    }
+                </div>
+
+                <button type="submit" className="login-button">Login</button>
+                <Link to="/signup" className="link">Don't have an account? Sign Up</Link>
+            </form>
+        );
+    }
+}
+
+export default withRouter(LoginForm);
