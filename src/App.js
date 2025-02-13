@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
 import Home from './components/Home';
@@ -10,24 +10,61 @@ import ProductList from './components/ProductList';
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Protected Route component
-  const ProtectedRoute = ({ children }) => {
-    if (!isLoggedIn) {
-      return <Navigate to="/" replace />;
+  useEffect(() => {
+    // Check for token on component mount
+    const token = localStorage.getItem('token');
+    if (token) {
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        const { username } = JSON.parse(userData);
+        setUsername(username);
+        setIsLoggedIn(true);
+      }
     }
-    return children;
+    setIsLoading(false);
+  }, []);
+
+  // Protected Route component with loading state
+  const ProtectedRoute = ({ children }) => {
+    if (isLoading) {
+      return <div>Loading...</div>;
+    }
+    
+    if (!isLoggedIn) {
+      return <Navigate to="/login" replace />;
+    }
+    
+    return (
+      <>
+        <Header username={username} onLogout={handleLogout} />
+        {children}
+      </>
+    );
   };
 
   const handleLoginSuccess = (userData) => {
     setUsername(userData.username);
     setIsLoggedIn(true);
+    // Store user data in localStorage
+    localStorage.setItem('userData', JSON.stringify({
+      username: userData.username,
+      id: userData.id
+    }));
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUsername('');
+    // Clear stored data
+    localStorage.removeItem('token');
+    localStorage.removeItem('userData');
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Router>
@@ -35,7 +72,7 @@ const App = () => {
         <main className="main-content">
           <Routes>
             <Route 
-              path="/" 
+              path="/login" 
               element={
                 isLoggedIn ? 
                 <Navigate to="/home" replace /> : 
@@ -43,13 +80,29 @@ const App = () => {
               } 
             />
             
-            <Route path="/signup" element={<SignupForm />} />
+            <Route 
+              path="/" 
+              element={
+                isLoggedIn ? 
+                <Navigate to="/home" replace /> : 
+                <Navigate to="/login" replace />
+              } 
+            />
+            
+            <Route 
+              path="/signup" 
+              element={
+                isLoggedIn ? 
+                <Navigate to="/home" replace /> : 
+                <SignupForm />
+              } 
+            />
             
             <Route 
               path="/home" 
               element={
                 <ProtectedRoute>
-                  <Home username={username} onLogout={handleLogout} />
+                  <Home username={username} />
                 </ProtectedRoute>
               } 
             />
@@ -72,9 +125,15 @@ const App = () => {
               } 
             />
             
-            <Route path="/header" element={<Header />} />
-            
-            <Route path="*" element={<div>Page not found</div>} />
+            <Route 
+              path="*" 
+              element={
+                <div className="not-found">
+                  <h2>404 - Page Not Found</h2>
+                  <Link to="/home">Return to Home</Link>
+                </div>
+              } 
+            />
           </Routes>
         </main>
       </div>

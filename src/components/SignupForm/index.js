@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
 import './index.css';
 
@@ -12,7 +12,9 @@ class SignupForm extends Component {
         usernameError: '',
         emailError: '',
         passwordError: '',
-        confirmPasswordError: ''
+        confirmPasswordError: '',
+        isRegistered: false,
+        serverError: ''
     };
 
     validateForm = () => {
@@ -64,7 +66,10 @@ class SignupForm extends Component {
 
     handleInputChange = (event) => {
         const { name, value } = event.target;
-        this.setState({ [name]: value });
+        this.setState({ 
+            [name]: value,
+            serverError: '' // Clear server error when user types
+        });
     };
 
     handleSubmit = async (event) => {
@@ -72,13 +77,6 @@ class SignupForm extends Component {
 
         if (this.validateForm()) {
             try {
-                console.log('Attempting to send data to:', 'http://localhost:5000/api/signup');
-                console.log('Sending data:', {
-                    username: this.state.username,
-                    email: this.state.email,
-                    password: this.state.password
-                });
-
                 const response = await axios.post('http://localhost:5000/api/signup', {
                     username: this.state.username,
                     email: this.state.email,
@@ -89,9 +87,13 @@ class SignupForm extends Component {
                     }
                 });
 
-                console.log('Server response:', response);
-                alert('Registration successful!');
+                // Store the token if provided
+                if (response.data.token) {
+                    localStorage.setItem('token', response.data.token);
+                }
 
+                this.setState({ isRegistered: true });
+                
                 // Reset form
                 this.setState({
                     username: '',
@@ -101,27 +103,42 @@ class SignupForm extends Component {
                     usernameError: '',
                     emailError: '',
                     passwordError: '',
-                    confirmPasswordError: ''
+                    confirmPasswordError: '',
+                    serverError: ''
                 });
+
             } catch (error) {
-                console.error('Full error object:', error);
-                console.error('Error response data:', error.response?.data);
-                console.error('Error status:', error.response?.status);
-                console.error('Error headers:', error.response?.headers);
+                console.error('Registration error:', error);
                 
+                // Handle specific error messages from backend
                 const errorMessage = error.response?.data?.error || 
-                                   error.message || 
-                                   'Registration failed - Please check if the server is running';
-                alert(errorMessage);
+                                   'Registration failed. Please try again.';
+                
+                // Set specific error messages based on backend response
+                if (errorMessage.includes('Username already exists')) {
+                    this.setState({ usernameError: 'Username is already taken' });
+                } else if (errorMessage.includes('Email already exists')) {
+                    this.setState({ emailError: 'Email is already registered' });
+                } else {
+                    this.setState({ serverError: errorMessage });
+                }
             }
         }
     };
 
     render() {
+        if (this.state.isRegistered) {
+            return <Navigate to="/login" />;
+        }
+
         return (
             <form className="signup-form-container" onSubmit={this.handleSubmit}>
                 <h1 className="signup-heading">Signup</h1>
                 
+                {this.state.serverError && 
+                    <p className="error-message server-error">{this.state.serverError}</p>
+                }
+
                 <div className="form-group">
                     <label className="input-label" htmlFor="username">Username</label>
                     <input
@@ -183,7 +200,7 @@ class SignupForm extends Component {
                 </div>
 
                 <button type="submit" className="signup-button">Sign Up</button>
-                <Link to="/" className="link">Already have an account? Login</Link>
+                <Link to="/login" className="link">Already have an account? Login</Link>
             </form>
         );
     }

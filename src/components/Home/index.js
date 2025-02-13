@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingBag, TrendingUp, Shield, Truck } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './index.css';
 
-const Home = ({ username, onNavigateToProducts, onLogout }) => {
+const Home = () => {
+  const [username, setUsername] = useState('');
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
   const features = [
     {
       icon: <ShoppingBag className="feature-icon" />,
@@ -26,12 +33,84 @@ const Home = ({ username, onNavigateToProducts, onLogout }) => {
     }
   ];
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    // Fetch user data and products
+    fetchHomeData();
+    fetchProducts();
+  }, [navigate]);
+
+  const fetchHomeData = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/home', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch home data');
+      }
+
+      const data = await response.json();
+      setUsername(data.user.username);
+    } catch (err) {
+      setError(err.message);
+      if (err.message.includes('401')) {
+        navigate('/login');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/products', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+
+      const data = await response.json();
+      setProducts(data);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
+  const handleNavigateToProducts = () => {
+    navigate('/products');
+  };
+
+  if (loading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center min-h-screen text-red-600">{error}</div>;
+  }
+
   return (
     <div className="home-page">
       <header className="header-bar">
         <div className="header-content">
           <h2>Welcome, {username || 'Guest'}!</h2>
-          <button onClick={onLogout} className="logout-button">
+          <button onClick={handleLogout} className="logout-button">
             Logout
           </button>
         </div>
@@ -49,7 +128,7 @@ const Home = ({ username, onNavigateToProducts, onLogout }) => {
                 From trendy fashion and electronics to home essentials and more, we bring you 
                 a curated selection of items to suit your lifestyle.
               </p>
-              <button onClick={onNavigateToProducts} className="primary-button">
+              <button onClick={handleNavigateToProducts} className="primary-button">
                 Shop Now
               </button>
             </div>
@@ -78,7 +157,7 @@ const Home = ({ username, onNavigateToProducts, onLogout }) => {
           <p className="cta-description">
             Shop with confidence and enjoy fast delivery, secure payments, and exceptional customer service.
           </p>
-          <button onClick={onNavigateToProducts} className="secondary-button">
+          <button onClick={handleNavigateToProducts} className="secondary-button">
             Explore Products
           </button>
         </div>
