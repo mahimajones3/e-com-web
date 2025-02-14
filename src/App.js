@@ -6,6 +6,7 @@ import Home from './components/Home';
 import Header from './components/Header';
 import Products from './components/Products';
 import ProductList from './components/ProductList';
+import Cart from './components/Cart';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -121,6 +122,15 @@ const App = () => {
               element={
                 <ProtectedRoute>
                   <ProductList />
+                </ProtectedRoute>
+              } 
+            />
+
+            <Route 
+              path="/cart" 
+              element={
+                <ProtectedRoute>
+                  <Cart />
                 </ProtectedRoute>
               } 
             />
