@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Trash2, Plus, Minus } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
