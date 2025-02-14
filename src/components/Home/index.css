@@ -1,12 +1,8 @@
-/* Home.css */
-
-/* General Styles */
 .home-container {
   min-height: 100vh;
   background-color: #f9fafb;
 }
 
-/* Header Styles */
 .home-header {
   background-color: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -56,7 +52,6 @@
   background-color: #b91c1c;
 }
 
-/* Main Content Styles */
 .home-main {
   max-width: 80rem;
   margin: 0 auto;
@@ -103,6 +98,7 @@
   color: white;
   border-radius: 0.5rem;
   transition: background-color 0.2s;
+  border: 0px;
 }
 
 .shop-now-button:hover {
@@ -184,6 +180,7 @@
   color: #2563eb;
   border-radius: 0.5rem;
   transition: background-color 0.2s;
+  border: 0px;
 }
 
 .explore-button:hover {
