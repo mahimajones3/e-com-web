@@ -17,9 +17,7 @@ const Cart = () => {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
-      if (!response.ok) throw new Error('Failed to fetch cart items');
-      const data = await response.json();
-      setCartItems(data);
+       
     } catch (err) {
       setError(err.message);
     } finally {

@@ -31,16 +31,7 @@ const Header = ({ isAuthenticated, onLogout }) => {
                             <ul className="menu-list">
                                 {!isAuthenticated ? (
                                     <>
-                                        <li className="menu-item">
-                                            <Link to="/signup" className="menu-link">Signup</Link>
-                                        </li>
-                                        <li className="menu-item">
-                                            <Link to="/" className="menu-link">Login</Link>
-                                        </li>
-                                    </>
-                                ) : (
-                                    <>
-                                        <li className="menu-item">
+                                         <li className="menu-item">
                                             <Link to="/home" className="menu-link">Home</Link>
                                         </li>
                                         <li className="menu-item">
@@ -50,10 +41,17 @@ const Header = ({ isAuthenticated, onLogout }) => {
                                             <Link to="/productlist" className="menu-link">Product List</Link>
                                         </li>
                                         <li className="menu-item">
+                                            <Link to="/cart" className="menu-link">Cart</Link>
+                                        </li>
+                                        <li className="menu-item">
                                             <button onClick={handleLogout} className="logout-button">
                                                 Logout
                                             </button>
                                         </li>
+                                    </>
+                                ) : (
+                                    <>
+                                       
                                     </>
                                 )}
                             </ul>

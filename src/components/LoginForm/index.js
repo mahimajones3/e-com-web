@@ -56,10 +56,7 @@ const LoginForm = ({ onLoginSuccess }) => {
     
                 const data = await response.json();
                 
-                // Check if the response contains a token and user data
-                if (!data || !data.token || !data.user) {
-                    throw new Error('Invalid server response');
-                }
+               
     
                 // Store the token in localStorage
                 localStorage.setItem('token', data.token);

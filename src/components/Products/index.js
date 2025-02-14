@@ -72,7 +72,6 @@ const Products = () => {
 
     return (
         <div>
-            <Header/>
             <form className="product-form" onSubmit={handleSubmit}>
                 <h2>Add Product</h2>
                 <div>

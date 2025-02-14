@@ -66,16 +66,8 @@ const ProductList = () => {
 
     return (
         <div className="product-page">
-            <header className="product-header">
-                <div className="header-content">
-                    <h1>Our Products</h1>
-                    <button onClick={handleLogout} className="logout-button">
-                        Logout
-                    </button>
-                </div>
-            </header>
-
-            <div className="product-list">
+           
+         <div className="product-list">
                 <div className="products">
                     {products.map((product) => (
                         <div key={product.id} className="product-card">
@@ -91,7 +83,7 @@ const ProductList = () => {
                             </div>
                             <h2 className="product-name">{product.name}</h2>
                             <p className="product-description">{product.description}</p>
-                            <p className="product-price">${product.price.toFixed(2)}</p>
+                            <p className="product-price">Rs {product.price.toFixed(2)}</p>
                             <p className="product-category">{product.category}</p>
                             <button
                                 className="add-to-cart-button"
