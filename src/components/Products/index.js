@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../Header";
 import axios from "axios";
 import './index.css';
 
@@ -17,7 +16,6 @@ const Products = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        // Check for authentication token
         const token = localStorage.getItem('token');
         if (!token) {
             navigate('/login');

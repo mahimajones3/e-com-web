@@ -1,10 +1,8 @@
-/* Product Page Layout */
 .product-page {
     min-height: 100vh;
     background-color: #f9fafb;
 }
 
-/* Header Styles */
 .product-header {
     background-color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -30,7 +28,6 @@
     margin: 0;
 }
 
-/* Product List Container */
 .product-list {
     max-width: 1200px;
     margin: 2rem auto;
@@ -44,7 +41,6 @@
     padding: 1rem 0;
 }
 
-/* Product Card */
 .product-card {
     background-color: white;
     border-radius: 0.75rem;
@@ -107,7 +103,6 @@
     margin-bottom: 1rem;
 }
 
-/* Buttons */
 .add-to-cart-button {
     background-color: #2563eb;
     color: white;
@@ -139,7 +134,6 @@
     color: #b91c1c;
 }
 
-/* Loading and Error States */
 .loading-state,
 .error-state {
     min-height: 50vh;
@@ -159,7 +153,6 @@
     color: #dc2626;
 }
 
-/* Responsive Design */
 @media (max-width: 640px) {
     .products {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

@@ -118,7 +118,6 @@
   height: auto;
 }
 
-/* Features Section */
 .features-grid {
   display: grid;
   gap: 1.5rem;
@@ -154,7 +153,6 @@
   color: #4b5563;
 }
 
-/* Call-to-Action Section */
 .cta-section {
   background-color: #2563eb;
   color: white;

@@ -55,26 +55,19 @@ const LoginForm = ({ onLoginSuccess }) => {
                 }
     
                 const data = await response.json();
-                
-               
-    
-                // Store the token in localStorage
+ 
                 localStorage.setItem('token', data.token);
-                
-                // Store user data in localStorage
+ 
                 localStorage.setItem('userData', JSON.stringify(data.user));
-    
-                // Call the onLoginSuccess prop with user data
+ 
                 if (onLoginSuccess) {
                     onLoginSuccess(data.user);
                 }
-    
-                // Clear form and errors
+ 
                 setUsername('');
                 setPassword('');
                 setLoginError('');
-    
-                // Navigate to home page
+ 
                 navigate('/home');
             } catch (error) {
                 console.error('Login error:', error);

@@ -59,7 +59,7 @@ const ProductList = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
-                body: JSON.stringify({ product_id: productId, quantity: 1 }) // Default quantity is 1
+                body: JSON.stringify({ product_id: productId, quantity: 1 }) 
             });
     
             if (!response.ok) {
@@ -68,10 +68,8 @@ const ProductList = () => {
     
             const data = await response.json();
             console.log('Product added to cart:', data);
-            // Optionally, you can show a success message or update the UI
         } catch (error) {
             console.error('Error adding product to cart:', error);
-            // Optionally, you can show an error message to the user
         }
     };
 

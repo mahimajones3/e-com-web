@@ -14,7 +14,6 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for token on component mount
     const token = localStorage.getItem('token');
     if (token) {
       const userData = localStorage.getItem('userData');
@@ -27,7 +26,6 @@ const App = () => {
     setIsLoading(false);
   }, []);
 
-  // Protected Route component with loading state
   const ProtectedRoute = ({ children }) => {
     if (isLoading) {
       return <div>Loading...</div>;

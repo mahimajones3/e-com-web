@@ -19,16 +19,13 @@ class SignupForm extends Component {
 
     validateForm = () => {
         let isValid = true;
-    
-        // Username validation
-        if (!this.state.username.trim()) {
+            if (!this.state.username.trim()) {
             this.setState({ usernameError: 'Username cannot be empty' });
             isValid = false;
         } else {
             this.setState({ usernameError: '' });
         }
 
-        // Email validation
         if (!this.state.email.trim()) {
             this.setState({ emailError: 'Email cannot be empty' });
             isValid = false;
@@ -39,7 +36,6 @@ class SignupForm extends Component {
             this.setState({ emailError: '' });
         }
 
-        // Password validation
         if (!this.state.password) {
             this.setState({ passwordError: 'Password cannot be empty' });
             isValid = false;
@@ -50,7 +46,6 @@ class SignupForm extends Component {
             this.setState({ passwordError: '' });
         }
 
-        // Confirm password validation
         if (!this.state.confirmPassword) {
             this.setState({ confirmPasswordError: 'Confirm password cannot be empty' });
             isValid = false;
@@ -68,7 +63,7 @@ class SignupForm extends Component {
         const { name, value } = event.target;
         this.setState({ 
             [name]: value,
-            serverError: '' // Clear server error when user types
+            serverError: '' 
         });
     };
 
@@ -87,14 +82,12 @@ class SignupForm extends Component {
                     }
                 });
 
-                // Store the token if provided
                 if (response.data.token) {
                     localStorage.setItem('token', response.data.token);
                 }
 
                 this.setState({ isRegistered: true });
                 
-                // Reset form
                 this.setState({
                     username: '',
                     email: '',
@@ -110,11 +103,9 @@ class SignupForm extends Component {
             } catch (error) {
                 console.error('Registration error:', error);
                 
-                // Handle specific error messages from backend
                 const errorMessage = error.response?.data?.error || 
                                    'Registration failed. Please try again.';
                 
-                // Set specific error messages based on backend response
                 if (errorMessage.includes('Username already exists')) {
                     this.setState({ usernameError: 'Username is already taken' });
                 } else if (errorMessage.includes('Email already exists')) {
