@@ -98,7 +98,7 @@ const Home = () => {
   };
 
   const handleNavigateToProducts = () => {
-    navigate('/products');
+    navigate('/productlist');
   };
 
   if (isLoading) {
