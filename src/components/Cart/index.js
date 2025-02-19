@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Trash2, Plus, Minus } from 'lucide-react';
-
 import './index.css';
 
 const Cart = () => {
@@ -14,19 +13,27 @@ const Cart = () => {
 
   const fetchCartItems = async () => {
     try {
-        const response = await fetch('http://localhost:5000/api/cart', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
+      const response = await fetch('http://localhost:5000/api/cart', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+  
 
-        
+      const data = await response.json();
+      if (Array.isArray(data.items)) {
+        setCartItems(data.items);
+      } else {
+        setCartItems([]);
+      }
     } catch (err) {
-        setError(err.message);
+      setError(err.message);
+      setCartItems([]);
     } finally {
-        setLoading(false); 
+      setLoading(false);
     }
-};
+  };
+
   const updateQuantity = async (itemId, newQuantity) => {
     if (newQuantity < 1) return;
     try {
@@ -64,8 +71,8 @@ const Cart = () => {
     return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  if (loading) return <div className="loading">Loading...</div>;
-  if (error) return <div className="error">{error}</div>;
+  if (loading) return <div className="cart-container loading">Loading your cart...</div>;
+  if (error) return <div className="cart-container error">Error: {error}</div>;
 
   return (
     <div className="cart-container">
@@ -73,63 +80,77 @@ const Cart = () => {
       
       {cartItems.length === 0 ? (
         <div className="empty-cart">
-          Your cart is empty
+          <p>Your cart is empty</p>
+          <a href="/products" className="continue-shopping">Continue Shopping</a>
         </div>
       ) : (
         <Card>
           <CardContent>
             <div className="cart-items">
               {cartItems.map((item) => (
-                <div key={item.id} className="cart-item">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.name}
-                    className="item-image"
-                  />
+                <div key={item._id} className="cart-item">
+                  <div className="item-image-container">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="item-image"
+                      onError={(e) => {
+                        e.target.src = '/placeholder-image.jpg'; // Add a placeholder image
+                      }}
+                    />
+                  </div>
                   
                   <div className="item-details">
                     <h3 className="item-name">{item.name}</h3>
-                    <p className="item-price">Rs.{item.price.toFixed(2)}</p>
-                  </div>
-                  
-                  <div className="quantity-controls">
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="quantity-button"
-                    >
-                      <Minus />
-                    </button>
+                    <p className="item-price">₹ {item.price.toFixed(2)}</p>
                     
-                    <span className="quantity-display">{item.quantity}</span>
-                    
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="quantity-button"
-                    >
-                      <Plus />
-                    </button>
+                    <div className="quantity-controls">
+                      <button
+                        onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                        className="quantity-button"
+                        disabled={item.quantity <= 1}
+                      >
+                        <Minus size={16} />
+                      </button>
+                      <span className="quantity-display">{item.quantity}</span>
+                      <button
+                        onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                        className="quantity-button"
+                      >
+                        <Plus size={16} />
+                      </button>
+                    </div>
                   </div>
                   
                   <div className="item-total">
-                    Rs.{(item.price * item.quantity).toFixed(2)}
+                    ₹{(item.price * item.quantity).toFixed(2)}
                   </div>
                   
                   <button
-                    onClick={() => removeItem(item.id)}
+                    onClick={() => removeItem(item._id)}
                     className="remove-button"
+                    aria-label="Remove item"
                   >
-                    <Trash2 />
+                    <Trash2 size={20} />
                   </button>
                 </div>
               ))}
             </div>
             
             <div className="cart-summary">
-              <div className="total-amount">
-                Total: Rs.{calculateTotal().toFixed(2)}
+              <div className="subtotal">
+                <span>Subtotal:</span>
+                <span>₹{calculateTotal().toFixed(2)}</span>
               </div>
-              <button className="checkout-button">
-                Checkout
+              <div className="total-amount">
+                <span>Total:</span>
+                <span>₹ {calculateTotal().toFixed(2)}</span>
+              </div>
+              <button 
+                className="checkout-button"
+                onClick={() => window.location.href = '/checkout'}
+              >
+                Proceed to Checkout
               </button>
             </div>
           </CardContent>

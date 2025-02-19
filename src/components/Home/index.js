@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, TrendingUp, Shield, Truck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import './index.css'; 
+import './index.css';
 
 const Home = () => {
-  const [userData, setUserData] = useState({ username: '' });
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState(null);
+  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
   const features = [
@@ -103,14 +103,26 @@ const Home = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Loading...</div>
+      <div className="loading-container">
+        <div className="loading-text">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <div className="error-text">{error}</div>
+        <button onClick={handleLogout} className="logout-button">
+          Logout
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="home-container">        
+    <div className="home-container">
+      
       <main className="home-main">
         <div className="hero-section">
           <div className="hero-grid">
@@ -124,7 +136,6 @@ const Home = () => {
                 Shop Now
               </button>
             </div>
-
           </div>
         </div>
 
@@ -148,6 +159,10 @@ const Home = () => {
             Explore Products
           </button>
         </div>
+
+        <footer className="footer">
+          <p>&copy; 2021 E-Commerce App. All Rights Reserved.</p>
+        </footer>
       </main>
     </div>
   );

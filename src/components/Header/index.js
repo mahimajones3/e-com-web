@@ -14,7 +14,6 @@ const Header = ({ isAuthenticated, onLogout }) => {
         <header className="header">
             <div className="container">
                 <div className="row align-items-center">
-                    {/* Logo Section */}
                     <div className="col-md-3">
                         <Link to={isAuthenticated ? "/home" : "/"} aria-label="Go to homepage">
                             <img 
